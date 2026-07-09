@@ -1,16 +1,16 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/rendercv/rendercv/refs/tags/v2.8/schema.json
 cv:
-  name: John Doe
-  headline: Machine Learning Researcher & Founder
-  location: San Francisco, CA
-  email: john.doe@email.com
+  name: Andrew Nasef
+  headline: Human
+  location: Cario, Egypt
+  email: contact@andronasef.com
   phone:
-  website: https://rendercv.com/
+  website: https://andronasef.com
   social_networks:
     - network: LinkedIn
-      username: rendercv
+      username: andronasef
     - network: GitHub
-      username: rendercv
+      username: andronasef
   sections:
     Welcome to RenderCV:
       - This CV is rendered entirely in your browser — Python (RenderCV) runs via PyScript, and Typst compiles to this page with WebAssembly. No server involved.
