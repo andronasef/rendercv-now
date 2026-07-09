@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rendercv/rendercv/refs/tags/v2.8/schema.json
+cv:
+  name: John Doe
+  headline: Machine Learning Researcher & Founder
+  location: San Francisco, CA
+  email: john.doe@email.com
+  phone:
+  website: https://rendercv.com/
+  social_networks:
+    - network: LinkedIn
+      username: rendercv
+    - network: GitHub
+      username: rendercv
+  sections:
+    Welcome to RenderCV:
+      - This CV is rendered entirely in your browser — Python (RenderCV) runs via PyScript, and Typst compiles to this page with WebAssembly. No server involved.
+      - Edit the YAML on the left. The preview updates as you type.
+      - Markdown works everywhere. This is **bold**, *italic*, and a [link](https://example.com).
+    education:
+      - institution: Princeton University
+        area: Computer Science
+        degree: PhD
+        start_date: 2018-09
+        end_date: 2023-05
+        location: Princeton, NJ
+        highlights:
+          - 'Thesis: Efficient Neural Architecture Search for Resource-Constrained Deployment'
+          - 'Advisor: Prof. Sanjeev Arora'
+          - NSF Graduate Research Fellowship, Siebel Scholar (Class of 2022)
+      - institution: Boğaziçi University
+        area: Computer Engineering
+        degree: BS
+        start_date: 2014-09
+        end_date: 2018-06
+        location: Istanbul, Türkiye
+        highlights:
+          - 'GPA: 3.97/4.00, Valedictorian'
+          - Fulbright Scholarship recipient for Graduate Studies
+    experience:
+      - company: Nexus AI
+        position: Co-Founder & CTO
+        start_date: 2023-06
+        end_date: present
+        location: San Francisco, CA
+        highlights:
+          - Built foundation model infrastructure serving 2M+ monthly API requests with 99.97% uptime
+          - Raised $18M Series A led by Sequoia Capital, with participation from a16z and Founders Fund
+          - Scaled engineering team from 3 to 28 across ML research, platform, and applied AI divisions
+      - company: NVIDIA Research
+        position: Research Intern
+        start_date: 2022-05
+        end_date: 2022-08
+        location: Santa Clara, CA
+        highlights:
+          - Designed sparse attention mechanism reducing transformer memory footprint by 4.2x
+          - Co-authored paper accepted at NeurIPS 2022 (spotlight, top 5% of submissions)
+    projects:
+      - name: '[FlashInfer](https://github.com/)'
+        start_date: 2023-01
+        end_date: present
+        summary: Open-source library for high-performance LLM inference kernels
+        highlights:
+          - Achieved 2.8x speedup over baseline attention implementations on A100 GPUs
+          - Adopted by 3 major AI labs, 8,500+ GitHub stars, 200+ contributors
+    skills:
+      - label: Languages
+        details: Python, C++, CUDA, Rust, Julia
+      - label: ML Frameworks
+        details: PyTorch, JAX, TensorFlow, Triton, ONNX
+      - label: Infrastructure
+        details: Kubernetes, Ray, distributed training, AWS, GCP
+    honors:
+      - bullet: MIT Technology Review 35 Under 35 Innovators (2024)
+      - bullet: Forbes 30 Under 30 in Enterprise Technology (2024)
+      - bullet: Google PhD Fellowship in Machine Learning (2020 – 2023)
+design:
+  theme: classic
+locale:
+  language: english
+settings:
+  current_date: today

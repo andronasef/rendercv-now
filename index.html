@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RenderCV · Browser Renderer</title>
+    <meta
+      name="description"
+      content="Render a RenderCV YAML résumé to a typeset PDF entirely in your browser — Python via PyScript, Typst via WebAssembly."
+    />
+    <link rel="icon" type="image/webp" href="/icon.webp" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- PyScript: the Python half (YAML → Typst source). Runs independently of
+         React and exposes window.rcvBuildTypst / window.rcvGetFonts. -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2026.7.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2026.7.1/core.js"></script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script type="py" src="/app.py" config="/pyscript.toml"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+# PyScript installs these from PyPI via micropip before running app.py.
+# Core rendercv only (NOT the [full] extra) so the native `typst` package —
+# which can't run in WASM — is never pulled. typst.ts compiles in the browser.
+# email-validator is required by pydantic[email] (EmailStr) but micropip does
+# not always resolve the extra, so list it explicitly.
+packages = ["rendercv", "rendercv-fonts", "email-validator"]
+
+# Auto-wrap Python callables assigned to JS objects as proxies (so JS can call
+# our render functions without manual create_proxy bookkeeping).
+experimental_create_proxy = "auto"
