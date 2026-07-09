@@ -6,7 +6,7 @@ import Editor from "./components/Editor.jsx";
 import Preview from "./components/Preview.jsx";
 import Boot from "./components/Boot.jsx";
 import { THEMES } from "./lib/constants.js";
-import { initTypst, compileSvg, compilePdf, fontsPromise } from "./lib/typst.js";
+import { initTypst, compileSvg, compilePdf, fontsFor, needsCjkReload } from "./lib/typst.js";
 import { onPythonReady, buildTypst } from "./lib/pybridge.js";
 import { syncThemeIntoYaml, themeFromYaml, nameFromYaml } from "./lib/yaml.js";
 import { setBootStatus } from "./lib/boot.js";
@@ -42,6 +42,8 @@ export default function App() {
   const firstRenderRef = useRef(true);
   const lastTypstRef = useRef("");
   const sampleRef = useRef(null);
+  const yamlRef = useRef("");
+  yamlRef.current = yaml; // latest yaml for the one-shot boot effect
 
   const fetchSample = useCallback(async () => {
     if (sampleRef.current != null) return sampleRef.current;
@@ -116,7 +118,9 @@ export default function App() {
       console.log(`[perf] python ready (pyodide+install+import): ${performance.now().toFixed(0)}ms`);
       setBootStatus("Loading fonts…");
       const t = performance.now();
-      initTypst(await fontsPromise); // usually already downloaded in parallel
+      // Core fonts are usually already downloaded in parallel with Pyodide;
+      // the CJK set is added only when the opened CV contains CJK text.
+      initTypst(await fontsFor(yamlRef.current));
       console.log(`[perf] fonts ready + typst init: +${(performance.now() - t).toFixed(0)}ms`);
       setBootStatus("Compiling your CV…");
       setReady(true);
@@ -126,6 +130,14 @@ export default function App() {
   // --- Render: YAML (+ theme) → Typst source → SVG -------------------------
   const doRender = useCallback(async (source, activeTheme) => {
     if (!window.rcvBuildTypst) return;
+    // typst.ts only takes fonts at init — if CJK text just appeared and the
+    // CJK fonts aren't loaded, reload once (the CV is autosaved; boot then
+    // loads the CJK set). Session guard prevents a loop if fonts 404.
+    if (needsCjkReload(source) && !sessionStorage.getItem("cjk-reload")) {
+      sessionStorage.setItem("cjk-reload", "1");
+      location.reload();
+      return;
+    }
     const token = ++tokenRef.current;
     setBusy(true);
     const result = buildTypst(source, activeTheme);

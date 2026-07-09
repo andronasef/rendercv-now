@@ -15,6 +15,12 @@ packages = [
   "/wheels/rendercv-2.8-py3-none-any.whl",
 ]
 
+# PyScript's default IndexedDB package cache restores our pinned wheels but NOT
+# their Pyodide-distribution deps (ruamel.yaml, pydantic, …) — every reload then
+# skips the install phase and dies with ModuleNotFoundError. sw.js already
+# caches all wheels cache-first, so disabling this loses nothing.
+packages_cache = "never"
+
 # Auto-wrap Python callables assigned to JS objects as proxies (so JS can call
 # our render functions without manual create_proxy bookkeeping).
 experimental_create_proxy = "auto"

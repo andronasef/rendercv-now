@@ -68,8 +68,12 @@ for (const [name, info] of Object.entries(frozen.packages)) {
         if (readdirSync(p).length === 0) rmSync(p, { recursive: true });
       }
     const rel = fonts.map((p) => "/" + path.relative("public", p).replaceAll("\\", "/")).sort();
-    writeFileSync("public/fonts/manifest.json", JSON.stringify(rel, null, 1));
-    console.log(`${name.padEnd(24)} ${rel.length} fonts -> ${outDir}`);
+    // CJK faces are ~45MB of the ~58MB set; almost no CV needs them, so the
+    // app loads them only when the YAML actually contains CJK text.
+    const isCjk = (f) => /NotoSans(JP|KR|SC)/.test(f);
+    const manifest = { core: rel.filter((f) => !isCjk(f)), cjk: rel.filter(isCjk) };
+    writeFileSync("public/fonts/manifest.json", JSON.stringify(manifest, null, 1));
+    console.log(`${name.padEnd(24)} ${manifest.core.length} core + ${manifest.cjk.length} cjk fonts -> ${outDir}`);
     continue;
   }
 
