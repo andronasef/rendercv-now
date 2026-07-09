@@ -3,8 +3,8 @@
 Runs the entire Python half of RenderCV under Pyodide: YAML -> pydantic
 validation -> Jinja2 generates a Typst source string. The native `typst`
 compiler is NOT installed (it can't run in WASM); typst.ts compiles the
-generated source in renderer.js. This module only produces the Typst text and
-hands the bundled fonts to JavaScript.
+generated source in renderer.js. This module only produces the Typst text;
+fonts are static files fetched by JS.
 """
 
 import io
@@ -20,8 +20,8 @@ def set_status(msg: str) -> None:
         el.textContent = msg
 
 
-# rendercv + rendercv-fonts are already installed by PyScript (pyscript.toml
-# `packages`) before this file runs.
+# rendercv (+ deps) is already installed by PyScript from the vendored wheels
+# (pyscript.toml `packages`) before this file runs.
 set_status("Loading libraries…")
 _t_import = time.time()
 from ruamel.yaml import YAML  # noqa: E402
@@ -104,31 +104,11 @@ def js_build_typst(yaml_text: str, theme: str) -> str:
         return json.dumps({"ok": False, "error": _format_error(exc)})
 
 
-def get_font_bytes():
-    """Return every bundled font as `bytes` (Pyodide maps each to a JS Uint8Array).
-
-    ponytail: load the whole rendercv-fonts set (~10MB, one-time at boot) so any
-    theme's font family resolves. Trim to per-theme fonts only if boot time bites.
-    """
-    import pathlib
-
-    import rendercv_fonts
-
-    _t = time.time()
-    root = pathlib.Path(rendercv_fonts.__file__).parent
-    fonts = []
-    for path in sorted(root.rglob("*")):
-        if path.suffix.lower() in (".ttf", ".otf"):
-            fonts.append(path.read_bytes())
-    window.console.log(
-        f"[perf] font read: {(time.time() - _t) * 1000:.0f}ms ({len(fonts)} files)"
-    )
-    return fonts
-
+# Fonts are fetched by JS from /fonts/ (see src/lib/typst.js) — Python never
+# touches them, so the 33MB rendercv-fonts wheel is not installed at all.
 
 # Expose to JS. experimental_create_proxy="auto" (pyscript.toml) wraps these.
 window.rcvBuildTypst = js_build_typst
-window.rcvGetFonts = get_font_bytes
 
 set_status("Loading fonts & Typst compiler…")
 window.dispatchEvent(window.CustomEvent.new("rcv:ready"))

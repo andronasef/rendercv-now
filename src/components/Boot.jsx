@@ -9,7 +9,7 @@ export default function Boot({ done }) {
   useEffect(() => {
     if (statusRef.current && !statusRef.current.textContent) {
       statusRef.current.textContent =
-        "Installing Python & RenderCV… (first load ~20–40s)";
+        "Loading Python & RenderCV… (first load ~10s)";
     }
   }, []);
 

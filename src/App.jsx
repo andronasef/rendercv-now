@@ -6,8 +6,8 @@ import Editor from "./components/Editor.jsx";
 import Preview from "./components/Preview.jsx";
 import Boot from "./components/Boot.jsx";
 import { THEMES } from "./lib/constants.js";
-import { initTypst, compileSvg, compilePdf } from "./lib/typst.js";
-import { onPythonReady, buildTypst, getFonts } from "./lib/pybridge.js";
+import { initTypst, compileSvg, compilePdf, fontsPromise } from "./lib/typst.js";
+import { onPythonReady, buildTypst } from "./lib/pybridge.js";
 import { syncThemeIntoYaml, themeFromYaml, nameFromYaml } from "./lib/yaml.js";
 import { setBootStatus } from "./lib/boot.js";
 import { save } from "./lib/download.js";
@@ -112,12 +112,12 @@ export default function App() {
 
   // --- Wait for Python, then initialize the Typst compiler -----------------
   useEffect(() => {
-    onPythonReady(() => {
+    onPythonReady(async () => {
       console.log(`[perf] python ready (pyodide+install+import): ${performance.now().toFixed(0)}ms`);
-      setBootStatus("Reading fonts…");
+      setBootStatus("Loading fonts…");
       const t = performance.now();
-      initTypst(getFonts());
-      console.log(`[perf] fonts read + typst init: +${(performance.now() - t).toFixed(0)}ms`);
+      initTypst(await fontsPromise); // usually already downloaded in parallel
+      console.log(`[perf] fonts ready + typst init: +${(performance.now() - t).toFixed(0)}ms`);
       setBootStatus("Compiling your CV…");
       setReady(true);
     });

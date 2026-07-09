@@ -1,9 +1,19 @@
-# PyScript installs these from PyPI via micropip before running app.py.
+# Exact wheels vendored in public/wheels/ (regenerate: node scripts/fetch-wheels.mjs).
+# Pinning URLs means micropip never resolves against PyPI at runtime — the old
+# name-based list ("rendercv", …) could hang forever on PyPI index resolution.
 # Core rendercv only (NOT the [full] extra) so the native `typst` package —
-# which can't run in WASM — is never pulled. typst.ts compiles in the browser.
-# email-validator is required by pydantic[email] (EmailStr) but micropip does
-# not always resolve the extra, so list it explicitly.
-packages = ["rendercv", "rendercv-fonts", "email-validator"]
+# which can't run in WASM — is never pulled; typst.ts compiles in the browser.
+# Dependencies that ship in Pyodide's own distribution (pydantic, jinja2, …)
+# still auto-load by name from its version-matched CDN, cached by sw.js.
+# Fonts are NOT installed into Python — they live in public/fonts/ as static
+# files and are fetched by JS (src/lib/typst.js) straight into typst.ts.
+packages = [
+  "/wheels/email_validator-2.3.0-py3-none-any.whl",
+  "/wheels/markdown-3.10.2-py3-none-any.whl",
+  "/wheels/phonenumbers-9.0.34-py2.py3-none-any.whl",
+  "/wheels/pydantic_extra_types-2.11.1-py3-none-any.whl",
+  "/wheels/rendercv-2.8-py3-none-any.whl",
+]
 
 # Auto-wrap Python callables assigned to JS objects as proxies (so JS can call
 # our render functions without manual create_proxy bookkeeping).

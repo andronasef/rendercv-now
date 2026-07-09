@@ -13,7 +13,21 @@ import { COMPILER_WASM, RENDERER_WASM } from "./constants.js";
 fetch(COMPILER_WASM).catch(() => {});
 fetch(RENDERER_WASM).catch(() => {});
 
-// fonts: Array<Uint8Array> (the rendercv-fonts set, read from Pyodide).
+// Fonts are static files (extracted from the rendercv-fonts wheel by
+// scripts/fetch-wheels.mjs). Start downloading them at app start too — they
+// arrive while Pyodide installs, instead of serially after Python is ready.
+export const fontsPromise = (async () => {
+  const files = await (await fetch("/fonts/manifest.json")).json();
+  return Promise.all(
+    files.map(async (f) => {
+      const r = await fetch(encodeURI(f));
+      if (!r.ok) throw new Error(`font ${f}: HTTP ${r.status}`);
+      return new Uint8Array(await r.arrayBuffer());
+    }),
+  );
+})();
+
+// fonts: Array<Uint8Array>.
 export function initTypst(fonts) {
   $typst.setCompilerInitOptions({
     getModule: () => COMPILER_WASM,
